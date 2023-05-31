@@ -1,14 +1,14 @@
-# Nerfies
+# LidarGait
 
-This is the repository that contains source code for the [Nerfies website](https://nerfies.github.io).
 
-If you find Nerfies useful for your work please cite:
 ```
-@article{park2021nerfies
-  author    = {Park, Keunhong and Sinha, Utkarsh and Barron, Jonathan T. and Bouaziz, Sofien and Goldman, Dan B and Seitz, Steven M. and Martin-Brualla, Ricardo},
-  title     = {Nerfies: Deformable Neural Radiance Fields},
-  journal   = {ICCV},
-  year      = {2021},
+@InProceedings{Shen_2023_CVPR,
+    author    = {Shen, Chuanfu and Fan, Chao and Wu, Wei and Wang, Rui and Huang, George Q. and Yu, Shiqi},
+    title     = {LidarGait: Benchmarking 3D Gait Recognition With Point Clouds},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2023},
+    pages     = {1054-1063}
 }
 ```
 
