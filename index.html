@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Deformable Neural Radiance Fields creates free-viewpoint portraits (nerfies) from casually captured videos.">
+  <meta name="keywords" content="Gait, LiDAR, Point cloud">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LidarGait: Benchmarking 3D Gait Recognition with Point Clouds</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://chuanfushen.github.io">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+         <a class="navbar-item" href="https://github.com/ShiqiYu/OpenGait">
+            OpenGait
+        </a>
+           <!-- <a class="navbar-item" href="https://nerfies.github.io">
+            Nerfies
+          </a>
+          <a class="navbar-item" href="https://latentfusion.github.io">
+            LatentFusion
+          </a>
+          <a class="navbar-item" href="https://photoshape.github.io">
+            PhotoShape
+          </a> -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">LidarGait: Benchmarking 3D Gait Recognition with Point Clouds</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://chuanfushen.github.io">Chuanfu Shen</a><sup>1,2</sup>,</span>
+            <span class="author-block">
+              <a href="https://chaofan996.github.io">Chao Fan</a><sup>2</sup>,</span>
+            <span class="author-block">
+              <a >Wei Wu</a><sup>2</sup>,</span>
+            <span class="author-block">
+              <a >Rui Wang</a><sup>2</sup>,</span>
+            <span class="author-block">
+              <a href="https://www.polyu.edu.hk/en/ise/people/academic-staff/george-huang/">George Q. Huang</a><sup>3</sup>,</span>
+            <span class="author-block">
+              <a href="https://www.sustech.edu.cn/en/faculties/yushiqi.html">Shiqi Yu</a><sup>2</sup>,</span>
+              <!-- <span class="author-block">
+              <a href="https://utkarshsinha.com">Utkarsh Sinha</a><sup>2</sup>,</span>
+            <span class="author-block">
+              <a href="https://jonbarron.info">Jonathan T. Barron</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="http://sofienbouaziz.com">Sofien Bouaziz</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://www.danbgoldman.com">Dan B Goldman</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://homes.cs.washington.edu/~seitz/">Steven M. Seitz</a><sup>1,2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="http://www.ricardomartinbrualla.com">Ricardo Martin-Brualla</a><sup>2</sup>
+            </span> -->
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>The University of Hong Kong,</span>
+            <span class="author-block"><sup>2</sup>Southern University of Science and Technology,</span>
+            <span class="author-block"><sup>3</sup>The Hong Kong Polytechnic University</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://openaccess.thecvf.com/content/CVPR2023/papers/Shen_LidarGait_Benchmarking_3D_Gait_Recognition_With_Point_Clouds_CVPR_2023_paper.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2211.10598.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=Z_jKaETR9Rk"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <!-- <span class="link-block">
+                <a href="https://github.com/google/nerfies"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span> -->
+              <!-- Dataset Link. -->
+              <!-- <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span> -->
+                  </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/pc.mov"
+                type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        <span class="dnerf">LidarGait</span> endows 3D information for gait recognition in the real world.
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+<!-- <section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/steve.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/chair-tp.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/shiba.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-fullbody">
+          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/fullbody.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-blueshirt">
+          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/blueshirt.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-mask">
+          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/mask.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-coffee">
+          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/coffee.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-toby">
+          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/toby2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Video-based gait recognition has achieved impressive results in 
+            constrained scenarios. However, visual cameras neglect human 3D 
+            structure information, which limits the feasibility of gait recognition 
+            in the 3D wild world.
+          </p>
+          <p>
+            Instead of extracting gait features from images, this work explores 
+            precise 3D gait features from point clouds and proposes a simple yet 
+            efficient 3D gait recognition framework, termed <span class="dnerf">LidarGait</span>. 
+            Our proposed approach projects sparse point clouds into depth maps to 
+            learn the representations with 3D geometry information, 
+            which outperforms existing point-wise and camera-based methods 
+            by a significant margin. Due to the lack of point cloud datasets,
+             we build the first large-scale LiDAR-based gait recognition dataset,
+              <span class="dnerf">SUSTech1K</span>, collected by a LiDAR sensor 
+              and an RGB camera. The dataset contains 25,239 sequences from 1,050 
+              subjects and covers many variations, including visibility, views, 
+              occlusions, clothing, carrying, and scenes. 
+          </p>
+          <p>
+            Extensive experiments show that (1) 3D structure information serves as a significant feature for gait recognition. (2) <span class="dnerf">LidarGait</span> outperforms existing point-based and silhouette-based methods by a significant margin, while it also offers stable cross-view results. (3) The LiDAR sensor is superior to the RGB camera for gait recognition in the outdoor environment.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Paper video. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/Z_jKaETR9Rk?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+    <!--/ Paper video. -->
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <!--/ Matting. -->
+
+    <!-- Animation. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">The SUSTech1K Benchmark</h2>
+
+
+
+        <div class="columns is-centered">
+
+
+    
+          <!-- Matting. -->
+          <div class="column">
+            <h2 class="title is-4">Diverse Attributes</h2>
+            <div class="columns is-centered">
+              <div class="column content">
+                <p>
+                  The SUSTech1K dataset preserves the variances found in ex- isting datasets, such as Normal, Bag, Clothes Changing, Views and Object Carrying, while also considering other common but challenging variances encountered outdoors, including Occlusion, Illumination, Uniform, and Umbrella.
+                </p>
+                <!-- <img src="./static/images/interpolate_start.jpg"
+                class="interpolation-image"
+                alt="Interpolate start reference image." /> -->
+                <!-- <video id="matting-video" controls playsinline height="100%">
+                  <source src="./static/videos/matting.mp4"
+                          type="video/mp4">
+                </video> -->
+              </div>
+    
+            </div>
+          </div>
+
+          <!-- Visual Effects. -->
+          <div class="column">
+            <div class="content">
+              <h2 class="title is-4">Multiple Modalities</h2>
+              <p>
+                The SUSTech1K dataset is a synchronized multimodal dataset, with timestamped frames for each modality of frames.
+              </p>
+              <!-- <img src="./static/images/interpolate_start.jpg"
+              class="interpolation-image"
+              alt="Interpolate start reference image." /> -->
+            </div>
+          </div>
+          <!--/ Visual Effects. -->
+
+        </div>        
+        <!-- Interpolating. -->
+        <h3 class="title is-4">Examplas</h3>
+        <div class="content has-text-justified">
+          <!-- <p>
+            (Left) Each participant walks normally (top row), followed by walking with a random variance as shown in the bottom row.
+          </p>
+          <p>
+            (Right) SUSTech1K collects data in point cloud and RGB modality with diverse realistic variances.
+          </p> -->
+        </div>
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-full-width has-text-centered">
+            <img src="./static/images/samples.png"
+                 class="interpolation-image"
+                 alt="Interpolate start reference image."/>
+            <!-- <p>Start Frame</p> -->
+          </div>
+
+        </div>
+        <br/>
+        <!--/ Interpolating. -->
+
+        <!-- Re-rendering. -->
+        <h3 class="title is-4">Statistics about SUSTech1K dataset</h3>
+        <div class="content has-text-justified">
+          <p>
+            <!-- LiDAR modality and RGB modality are represented in blue and yellow, respectively. It shows that SUSTech1K dataset is scalable, multimodal, and diverse for the study of 3D gait recognition. CR, BG, UB, UF, NT, NM, OC, and CL denote attributes of Carrying, Bag, Umbrella, Uniform, Night, Occlusion, and Clothing, respectively.  -->
+        </div>
+        <div class="content has-text-centered">
+          <div class="column is-full-width has-text-centered">
+            <img src="./static/images/statis.png"
+                 class="interpolation-image"
+                 alt="Interpolate start reference image."/>
+            <!-- <p>Start Frame</p> -->
+          </div>
+        </div>
+        <!--/ Re-rendering. -->
+
+      </div>
+    </div>
+    <!--/ Animation. -->
+
+
+    <h3 class="title is-4">Download</h3>
+    <div class="content has-text-justified">
+      <p>
+        Coming Soon!
+        <!-- All users can obtain and use this dataset and only after signing the
+        <a href="./static/resources/AgreementForGait3D.pdf" target="_blabk" style="color: #09f;">Agreement</a>
+        and sending it to the official contact email address (gait3d.dataset@gmail.com)</p> -->
+    </div>
+
+    <!-- Concurrent Work. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Our proposed baseline: <a href="https://github.com/keunhong">LidarGait<i class="fab fa-github"></i></a>
+          <!-- <a class="icon-link" href="https://github.com/keunhong" class="external-link" disabled>
+          <i class="fab fa-github"></i>
+        </a> -->
+      </h2>
+
+      <div class="content has-text-justified">
+        <p>
+          <!-- LiDAR modality and RGB modality are represented in blue and yellow, respectively. It shows that SUSTech1K dataset is scalable, multimodal, and diverse for the study of 3D gait recognition. CR, BG, UB, UF, NT, NM, OC, and CL denote attributes of Carrying, Bag, Umbrella, Uniform, Night, Occlusion, and Clothing, respectively.  -->
+      </div>
+      <div class="content has-text-centered">
+        <div class="column is-full-width has-text-centered">
+          <img src="./static/images/lidargait.png"
+               class="interpolation-image"
+               alt="Interpolate start reference image."/>
+          <!-- <p>Start Frame</p> -->
+        </div>
+      </div>
+
+
+        <!-- <div class="content has-text-justified">
+          <p>
+            There's a lot of excellent work that was introduced around the same time as ours.
+          </p>
+          <p>
+            <a href="https://arxiv.org/abs/2104.09125">Progressive Encoding for Neural Optimization</a> introduces an idea similar to our windowed position encoding for coarse-to-fine optimization.
+          </p>
+          <p>
+            <a href="https://www.albertpumarola.com/research/D-NeRF/index.html">D-NeRF</a> and <a href="https://gvv.mpi-inf.mpg.de/projects/nonrigid_nerf/">NR-NeRF</a>
+            both use deformation fields to model non-rigid scenes.
+          </p>
+          <p>
+            Some works model videos with a NeRF by directly modulating the density, such as <a href="https://video-nerf.github.io/">Video-NeRF</a>, <a href="https://www.cs.cornell.edu/~zl548/NSFF/">NSFF</a>, and <a href="https://neural-3d-video.github.io/">DyNeRF</a>
+          </p>
+          <p>
+            There are probably many more by the time you are reading this. Check out <a href="https://dellaert.github.io/NeRF/">Frank Dellart's survey on recent NeRF papers</a>, and <a href="https://github.com/yenchenlin/awesome-NeRF">Yen-Chen Lin's curated list of NeRF papers</a>.
+          </p>
+        </div> -->
+      </div>
+    </div>
+    <!--/ Concurrent Work. -->
+
+  </div>
+</section>
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">LiDAR meets Gait</h2>
+
+    <div class="content has-text-justified">
+      <p>
+        As camera-based methods constrained by real-world factors, introducing LiDAR sensor for gait recognition
+        is a promising direction. However, the lack of large-scale LiDAR gait datasets hinders the development of
+        LiDAR-based gait recognition. 
+      </p>
+      <p>
+        To make gait recognition towards real-world applications, we would like to thanks all efforts made by previous researchers.
+        Besides, there are some excellent work that investigates LiDAR-based recognition around the same time as ours.
+      </p>
+
+      <p>
+        <a href="https://arxiv.org/abs/2211.12371">LiCamGait</a> introduces an dataset with camera and LiDAR modalities similar to our SUSTech1K. 
+        We believe that our dataset and LiCamGait dataset can complement each other and promote the development of LiDAR-based gait recognition.
+      </p>
+        <!-- LiDAR modality and RGB modality are represented in blue and yellow, respectively. It shows that SUSTech1K dataset is scalable, multimodal, and diverse for the study of 3D gait recognition. CR, BG, UB, UF, NT, NM, OC, and CL denote attributes of Carrying, Bag, Umbrella, Uniform, Night, Occlusion, and Clothing, respectively.  -->
+    </div>
+
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@InProceedings{Shen_2023_CVPR,
+      author    = {Shen, Chuanfu and Fan, Chao and Wu, Wei and Wang, Rui and Huang, George Q. and Yu, Shiqi},
+      title     = {LidarGait: Benchmarking 3D Gait Recognition With Point Clouds},
+      booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+      month     = {June},
+      year      = {2023},
+      pages     = {1054-1063}
+  }</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <!-- <div class="content has-text-centered">
+      <a class="icon-link"
+         href="./static/videos/nerfies_paper.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/keunhong" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div> -->
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <!-- <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p> -->
+          <p>
+            We made this site with the code from <a
+              href="https://github.com/nerfies/nerfies.github.io">nerfies</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
